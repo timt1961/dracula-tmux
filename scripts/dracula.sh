@@ -17,6 +17,7 @@ main()
   show_flags=$(get_tmux_option "@dracula-show-flags" false)
   show_left_icon=$(get_tmux_option "@dracula-show-left-icon" smiley)
   show_left_icon_padding=$(get_tmux_option "@dracula-left-icon-padding" 1)
+  show_iso8601=$(get_tmux_option "@dracula-iso8601" true)
   show_military=$(get_tmux_option "@dracula-military-time" false)
   show_timezone=$(get_tmux_option "@dracula-show-timezone" true)
   show_left_sep=$(get_tmux_option "@dracula-show-left-sep" )
@@ -181,15 +182,17 @@ main()
 
     if [ $plugin = "time" ]; then
       IFS=' ' read -r -a colors <<< $(get_tmux_option "@dracula-time-colors" "dark_purple white")
-      if $show_day_month && $show_military ; then # military time and dd/mm
-        script="%a %d/%m %R ${timezone} "
-      elif $show_military; then # only military time
-        script="%a %m/%d %R ${timezone} "
-      elif $show_day_month; then # only dd/mm
-        script="%a %d/%m %I:%M %p ${timezone} "
-      else
-        script="%a %m/%d %I:%M %p ${timezone} "
-      fi
+     if $show_iso8601 ; then
+      script="%Y-%m-%d %H:%M:%S %z"
+     elif $show_day_month && $show_military ; then # military time and dd/mm
+      script="%a %d/%m %R ${timezone} "
+     elif $show_military; then # only military time
+      script="%a %m/%d %R ${timezone} "
+     elif $show_day_month; then # only dd/mm
+      script="%a %d/%m %I:%M %p ${timezone} "
+     else
+      script="%a %m/%d %I:%M %p ${timezone} "
+     fi
     fi
 
     if $show_powerline; then
